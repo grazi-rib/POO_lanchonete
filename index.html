@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistema de Pedidos de Lanchonete - Documentação</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 16px; line-height: 1.6; color: #222; }
+  h1 { color: #b45309; }
+  h2 { border-bottom: 2px solid #f59e0b; padding-bottom: 4px; margin-top: 32px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  th { background: #fef3c7; }
+</style>
+</head>
+<body>
+
+<h1>Sistema de Pedidos de Lanchonete</h1>
+
+<h2>Nome do projeto</h2>
+<p>Sistema de Pedidos de Lanchonete.</p>
+
+<h2>Tema escolhido</h2>
+<p>Gestão de pedidos em estabelecimentos de alimentação (lanchonetes).</p>
+
+<h2>Descrição do problema</h2>
+<p>Em muitas lanchonetes pequenas, o cardápio e os pedidos são anotados em papel, o que causa erros no cálculo do valor total, perda de informações e dificuldade para consultar pedidos já realizados.</p>
+
+<h2>Objetivo do sistema</h2>
+<p>Permitir o cadastro dos itens do cardápio (lanches e bebidas), a montagem de pedidos com cálculo automático do total e o armazenamento de todas as informações em arquivos, de forma que os dados permaneçam disponíveis após o encerramento do programa.</p>
+
+<h2>Requisitos funcionais</h2>
+<table>
+  <tr><th>Código</th><th>Descrição</th></tr>
+  <tr><td>RF01</td><td>O sistema deve permitir cadastrar itens no cardápio, informando tipo (lanche ou bebida), nome e preço.</td></tr>
+  <tr><td>RF02</td><td>O sistema deve listar todos os itens cadastrados no cardápio.</td></tr>
+  <tr><td>RF03</td><td>O sistema deve permitir criar um pedido escolhendo um ou mais itens do cardápio.</td></tr>
+  <tr><td>RF04</td><td>O sistema deve calcular automaticamente o valor total do pedido somando os preços dos itens.</td></tr>
+  <tr><td>RF05</td><td>O sistema deve salvar cardápio e pedidos em arquivos de texto (escrita) e carregá-los ao iniciar (leitura).</td></tr>
+  <tr><td>RF06</td><td>O sistema deve listar todos os pedidos já realizados, com seus itens e totais.</td></tr>
+  <tr><td>RF07</td><td>O sistema deve oferecer interação por meio de um menu no terminal.</td></tr>
+</table>
+
+<h2>Diagrama de classes UML</h2>
+<pre class="mermaid">
+classDiagram
+    class Produto {
+        <<abstract>>
+        -String nome
+        -double preco
+        +Produto(nome, preco)
+        +getNome() String
+        +setNome(nome) void
+        +getPreco() double
+        +setPreco(preco) void
+        +getTipo()* String
+        +toString() String
+    }
+    class Lanche {
+        +Lanche(nome, preco)
+        +getTipo() String
+    }
+    class Bebida {
+        +Bebida(nome, preco)
+        +getTipo() String
+    }
+    class Pedido {
+        -int id
+        -List~Produto~ itens
+        +Pedido(id)
+        +getId() int
+        +getItens() List~Produto~
+        +adicionarItem(produto) void
+        +calcularTotal() double
+        +toString() String
+    }
+    class GerenciadorArquivo {
+        -String ARQ_CARDAPIO
+        -String ARQ_PEDIDOS
+        +salvarCardapio(cardapio) void
+        +carregarCardapio() List~Produto~
+        +salvarPedidos(pedidos) void
+        +carregarPedidos() List~Pedido~
+        -lerProduto(linha) Produto
+    }
+    class Main {
+        +main(args) void
+    }
+    Produto <|-- Lanche
+    Produto <|-- Bebida
+    Pedido "1" o-- "1..*" Produto : contém
+    GerenciadorArquivo ..> Produto : usa
+    GerenciadorArquivo ..> Pedido : usa
+    Main ..> GerenciadorArquivo : usa
+    Main ..> Pedido : cria
+    Main ..> Produto : cadastra
+</pre>
+
+<h2>Conceitos de orientação a objetos aplicados</h2>
+<table>
+  <tr><th>Conceito</th><th>Onde aparece</th></tr>
+  <tr><td>Encapsulamento</td><td>Atributos privados com getters/setters em Produto e Pedido.</td></tr>
+  <tr><td>Herança</td><td>Lanche e Bebida herdam de Produto.</td></tr>
+  <tr><td>Classe abstrata</td><td>Produto não pode ser instanciada diretamente.</td></tr>
+  <tr><td>Polimorfismo</td><td>O método getTipo() é implementado de forma diferente em Lanche e Bebida; a lista de Produto guarda ambos.</td></tr>
+  <tr><td>Composição/Agregação</td><td>Um Pedido possui uma lista de Produtos.</td></tr>
+</table>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
+</body>
+</html>
